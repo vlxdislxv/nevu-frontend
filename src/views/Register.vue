@@ -15,7 +15,7 @@
                 type="text"
                 name="full_name"
                 placeholder="Full Name"
-                :value="member.fullName"
+                v-model.lazy="member.fullName"
               />
               <span class="focus-input100"></span>
               <span class="symbol-input100">
@@ -29,7 +29,7 @@
                 type="text"
                 name="email"
                 placeholder="Email"
-                :value="member.email"
+                v-model.lazy="member.email"
               />
               <span class="focus-input100"></span>
               <span class="symbol-input100">
@@ -43,7 +43,7 @@
                 type="text"
                 name="username"
                 placeholder="Username"
-                :value="member.username"
+                v-model.lazy="member.username"
               />
               <span class="focus-input100"></span>
               <span class="symbol-input100">
@@ -57,7 +57,7 @@
                 type="password"
                 name="pass"
                 placeholder="Password"
-                :value="member.password"
+                v-model.lazy="member.password"
               />
               <span class="focus-input100"></span>
               <span class="symbol-input100">
@@ -85,6 +85,8 @@
 </template>
 
 <script>
+import gql from "graphql-tag";
+
 export default {
   data() {
     return {
@@ -96,9 +98,45 @@ export default {
       }
     };
   },
+  beforeMount() {
+    if (this.$store.getters.authenticated) {
+      this.$router.push("home");
+    }
+  },
   methods: {
     signUp() {
-      console.log("test");
+      this.$apollo
+        .mutate({
+          mutation: gql`
+            mutation(
+              $username: String!
+              $password: String!
+              $fullName: String!
+              $email: String!
+            ) {
+              register(
+                user: {
+                  username: $username
+                  password: $password
+                  fullName: $fullName
+                  email: $email
+                }
+              ) {
+                token
+              }
+            }
+          `,
+          variables: { ...this.member }
+        })
+        .then(resp => {
+          const token = resp.data.register.token;
+          this.$store.commit("authenticate", { token });
+          this.$router.push("home");
+        })
+        .catch(err => {
+          console.log(err.graphQLErrors);
+          alert("invalid input data");
+        });
     }
   }
 };
