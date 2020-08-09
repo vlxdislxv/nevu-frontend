@@ -14,7 +14,7 @@ new Vue({
   store,
   apolloProvider,
   beforeCreate() {
-    this.$store.commit("initializeStore");
+    this.$store.commit("initializeStore", this.$apollo);
   },
   render: h => h(App)
 }).$mount("#app");
