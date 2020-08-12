@@ -1,4 +1,4 @@
-# nevu-frontend
+<p align="center"># nevu-frontend</p>
 <p align="center">
 <img src="https://vuejs.org/images/logo.png"/>
 </p>
