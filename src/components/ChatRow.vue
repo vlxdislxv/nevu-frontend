@@ -54,10 +54,13 @@ export default class ChatRow extends Vue {
           headers: {
             authorization: `Bearer ${this.$store.getters.token}`
           }
-        }
+        },
+        fetchPolicy: "no-cache"
       })
       .then(res => {
         this.$store.commit("messages", res.data.getMessage);
+        this.$store.state.chatId = this.id;
+        this.$store.state.chatName = this.name;
       })
       .catch(err => console.log(err));
   }

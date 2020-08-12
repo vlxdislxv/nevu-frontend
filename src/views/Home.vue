@@ -4,6 +4,7 @@
 <template>
   <div class="home">
     <div class="container">
+      User: {{ fullName }}
       <div class="content-wrapper">
         <div class="row gutters">
           <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
@@ -28,6 +29,11 @@ export default {
   components: {
     ChatBox,
     ChatList
+  },
+  computed: {
+    fullName() {
+      return this.$store.state.user.fullName;
+    }
   }
 };
 </script>

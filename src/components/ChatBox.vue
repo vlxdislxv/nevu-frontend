@@ -40,19 +40,57 @@
           </li>
         </div>
       </ul>
-      <div class="form-group mt-3 mb-0">
+      <div v-if="chatId !== -1" class="form-group mt-3 mb-0">
         <textarea
           class="form-control"
           rows="3"
           placeholder="Type your message here..."
+          v-model="message"
         ></textarea>
+        <button v-on:click="this.sendMessage" class="btn btn-success">
+          send message
+        </button>
       </div>
     </div>
   </div>
 </template>
 <script>
+import { gql } from "apollo-boost";
+import io from "socket.io-client";
+
 export default {
   name: "ChatBox",
+  beforeMount() {
+    const socket = io("http://localhost:3000/");
+
+    socket.on("inc_msg", data => {
+      this.$toasted.show(`new message from ${data.message.from.fullName}`, {
+        theme: "bubble",
+        position: "top-right",
+        duration: 5000
+      });
+      if (data.message.chat.id === this.$store.getters.chatId) {
+        this.$store.state.messages.push(data.message);
+        setTimeout(() => {
+          const el = this.$el.querySelector(".chatContainerScroll");
+          el.scrollTop = el.scrollHeight;
+        });
+      }
+    });
+
+    socket.emit("auth", { token: this.$store.getters.token });
+  },
+  data() {
+    return {
+      message: ""
+    };
+  },
+  updated() {
+    setTimeout(() => {
+      const elf = this.$el.querySelector(".chatContainerScroll");
+      elf.scrollTop = elf.scrollHeight;
+    });
+  },
   computed: {
     messages() {
       return this.$store.state.messages;
@@ -60,8 +98,39 @@ export default {
     chatName() {
       return this.$store.state.chatName;
     },
+    chatId() {
+      return this.$store.state.chatId;
+    },
     user() {
       return this.$store.state.user;
+    }
+  },
+  methods: {
+    sendMessage() {
+      this.$apollo
+        .mutate({
+          mutation: gql`
+          mutation {
+            addMessage(message: { text: "${this.message}", chatId: ${this.chatId} }) {
+              id,
+              text,
+              from {id, fullName, username}
+            }
+          }
+        `,
+          context: {
+            headers: {
+              authorization: `Bearer ${this.$store.getters.token}`
+            }
+          }
+        })
+        .then(res => {
+          this.$store.state.messages.push(res.data.addMessage);
+          setTimeout(() => {
+            const el = this.$el.querySelector(".chatContainerScroll");
+            el.scrollTop = el.scrollHeight;
+          });
+        });
     }
   }
 };

@@ -12,10 +12,18 @@ export default new Vuex.Store({
     selectedUser: undefined,
     messages: [],
     chats: [],
+    searchUsers: [],
     user: {},
-    chatName: ""
+    chatName: "",
+    chatId: -1
   },
   mutations: {
+    user(state, user) {
+      state.user = user;
+    },
+    searchUsers(state, searchUsers) {
+      state.searchUsers = searchUsers;
+    },
     chats(state, chats) {
       state.chats = chats;
     },
@@ -63,11 +71,17 @@ export default new Vuex.Store({
   actions: {},
   modules: {},
   getters: {
+    searchUsers(state) {
+      return state.searchUsers;
+    },
     chats(state) {
       return state.chats;
     },
     chatName(state) {
       return state.chatName;
+    },
+    chatId(state) {
+      return state.chatId;
     },
     authenticated(state) {
       return state.authenticated;

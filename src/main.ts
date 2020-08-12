@@ -4,8 +4,10 @@ import router from "./router";
 import store from "./store";
 import apolloProvider from "./apollo";
 import VueApollo from "vue-apollo";
+import Toasted from "vue-toasted";
 
 Vue.use(VueApollo);
+Vue.use(Toasted);
 
 Vue.config.productionTip = false;
 
