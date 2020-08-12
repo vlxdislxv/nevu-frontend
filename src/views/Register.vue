@@ -85,7 +85,7 @@
 </template>
 
 <script>
-import gql from "graphql-tag";
+import { registerQuery } from "@/common/gql-constants";
 
 export default {
   data() {
@@ -107,30 +107,13 @@ export default {
     signUp() {
       this.$apollo
         .mutate({
-          mutation: gql`
-            mutation(
-              $username: String!
-              $password: String!
-              $fullName: String!
-              $email: String!
-            ) {
-              register(
-                user: {
-                  username: $username
-                  password: $password
-                  fullName: $fullName
-                  email: $email
-                }
-              ) {
-                token
-              }
-            }
-          `,
+          mutation: registerQuery,
           variables: { ...this.member }
         })
         .then(resp => {
           const token = resp.data.register.token;
           this.$store.commit("authenticate", { token });
+          this.$store.commit("initializeStore", this.$apollo);
           this.$router.push("home");
         })
         .catch(err => {

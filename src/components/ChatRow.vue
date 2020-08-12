@@ -20,7 +20,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
-import { gql } from "apollo-boost";
+import { getMessageQuery } from "../common/gql-constants";
 
 @Component
 export default class ChatRow extends Vue {
@@ -37,23 +37,14 @@ export default class ChatRow extends Vue {
   selectChat() {
     this.$apollo
       .query({
-        query: gql`
-          query {
-            getMessage(chatId: ${this.id}) {
-              id
-              text
-              from {
-                id
-                username
-                fullName
-              }
-            }
-          }
-        `,
+        query: getMessageQuery,
         context: {
           headers: {
             authorization: `Bearer ${this.$store.getters.token}`
           }
+        },
+        variables: {
+          chatId: this.id
         },
         fetchPolicy: "no-cache"
       })

@@ -27,8 +27,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
-import { gql } from "apollo-boost";
-import { getChatQuery } from "../common/gql-constants";
+import { getChatQuery, createChatQuery } from "../common/gql-constants";
 
 @Component
 export default class UserRow extends Vue {
@@ -47,15 +46,14 @@ export default class UserRow extends Vue {
     if (!this.clicked) {
       this.$apollo
         .mutate({
-          mutation: gql`
-          mutation {
-            createChat (chat: {with: [${this.id}]}) {id, name}
-          }
-        `,
+          mutation: createChatQuery,
           context: {
             headers: {
               authorization: `Bearer ${this.$store.getters.token}`
             }
+          },
+          variables: {
+            userId: this.id
           }
         })
         .then(() => {

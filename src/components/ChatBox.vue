@@ -55,8 +55,8 @@
   </div>
 </template>
 <script>
-import { gql } from "apollo-boost";
 import io from "socket.io-client";
+import { addMessageQuery } from "@/common/gql-constants";
 
 export default {
   name: "ChatBox",
@@ -109,19 +109,15 @@ export default {
     sendMessage() {
       this.$apollo
         .mutate({
-          mutation: gql`
-          mutation {
-            addMessage(message: { text: "${this.message}", chatId: ${this.chatId} }) {
-              id,
-              text,
-              from {id, fullName, username}
-            }
-          }
-        `,
+          mutation: addMessageQuery,
           context: {
             headers: {
               authorization: `Bearer ${this.$store.getters.token}`
             }
+          },
+          variables: {
+            chatId: this.chatId,
+            text: this.message
           }
         })
         .then(res => {

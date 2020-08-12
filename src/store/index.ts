@@ -1,7 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import { DollarApollo } from "vue-apollo/types/vue-apollo";
-import { gql } from "apollo-boost";
+import { profileQuery } from "../common/gql-constants";
 
 Vue.use(Vuex);
 
@@ -42,15 +42,7 @@ export default new Vuex.Store({
         state.authenticated = true;
         apollo
           .query({
-            query: gql`
-              query {
-                profile {
-                  id
-                  username
-                  fullName
-                }
-              }
-            `,
+            query: profileQuery,
             context: {
               headers: {
                 authorization: `Bearer ${token}`

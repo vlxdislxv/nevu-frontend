@@ -32,8 +32,7 @@
 <script>
 import ChatRow from "./ChatRow";
 import UserRow from "./UserRow";
-import gql from "graphql-tag";
-import { getChatQuery } from "../common/gql-constants";
+import { getChatQuery, findUserQuery } from "../common/gql-constants";
 
 export default {
   name: "ChatList",
@@ -83,19 +82,14 @@ export default {
     find() {
       this.$apollo
         .query({
-          query: gql`
-            query {
-              findUser(user: { search: "${this.search}" }) {
-                id
-                username
-                fullName
-              }
-            }
-          `,
+          query: findUserQuery,
           context: {
             headers: {
               authorization: `Bearer ${this.$store.getters.token}`
             }
+          },
+          variables: {
+            search: this.search
           }
         })
         .then(res => {
