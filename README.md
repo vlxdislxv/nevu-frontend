@@ -1,7 +1,7 @@
 # nevu-frontend
-
+<p align="center">
 <img src="https://vuejs.org/images/logo.png"/>
-
+</p>
 ## Project setup
 ```
 npm install
