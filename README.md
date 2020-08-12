@@ -1,6 +1,8 @@
 <p align="center">
-  <img src="https://vuejs.org/images/logo.png"/>
+  <img src="https://vuejs.org/images/logo.png" alt="vuejs" />
 </p>
+
+
 ## Project setup
 ```
 npm install
