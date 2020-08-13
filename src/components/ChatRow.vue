@@ -9,7 +9,10 @@
         src="https://www.bootdey.com/img/Content/avatar/avatar1.png"
         alt="Retail Admin"
       />
-      <span class="status away"></span>
+      <span
+        class="status"
+        v-bind:class="{ offline: !online, online: online }"
+      ></span>
     </div>
     <p class="name-time">
       <span class="name">{{ name }}</span>
@@ -26,6 +29,7 @@ import { getMessageQuery } from "../common/gql-constants";
 export default class ChatRow extends Vue {
   @Prop() private id!: string;
   @Prop() private name!: string;
+  @Prop() private online!: boolean;
 
   data() {
     const vxUser = this.$store.getters.selectedUser;

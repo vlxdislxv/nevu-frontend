@@ -20,7 +20,7 @@
       </div>
       <ul class="users">
         <div v-for="chat in chats" v-bind:key="chat.id">
-          <ChatRow :id="chat.id" :name="chat.name" />
+          <ChatRow :id="chat.id" :name="chat.name" :online="chat.online" />
         </div>
         <div v-for="user in searchUsers" v-bind:key="user.id">
           <UserRow :id="user.id" :full-name="user.fullName" />

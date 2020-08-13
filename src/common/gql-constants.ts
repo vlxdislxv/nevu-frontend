@@ -5,6 +5,7 @@ export const getChatQuery = gql`
     getChat {
       id
       name
+      online
     }
   }
 `;

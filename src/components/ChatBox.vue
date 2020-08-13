@@ -78,7 +78,9 @@ export default {
       }
     });
 
-    socket.emit("auth", { token: this.$store.getters.token });
+    socket.on("connect", () => {
+      socket.emit("auth", { token: this.$store.getters.token });
+    });
   },
   data() {
     return {
