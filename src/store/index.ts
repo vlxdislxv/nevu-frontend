@@ -2,6 +2,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 import { DollarApollo } from "vue-apollo/types/vue-apollo";
 import { profileQuery } from "../common/gql-constants";
+import VueRouter from "vue-router";
 
 Vue.use(Vuex);
 
@@ -35,7 +36,10 @@ export default new Vuex.Store({
       state.token = payload.token;
       localStorage.setItem("token", state.token);
     },
-    initializeStore(state, apollo: DollarApollo<object>) {
+    initializeStore(
+      state,
+      { apollo, router }: { apollo: DollarApollo<object>; router: VueRouter }
+    ) {
       const token = localStorage.getItem("token");
       if (token) {
         state.token = token;
@@ -56,6 +60,7 @@ export default new Vuex.Store({
             state.authenticated = false;
             state.token = "";
             localStorage.removeItem("token");
+            router.push("login");
           });
       }
     }

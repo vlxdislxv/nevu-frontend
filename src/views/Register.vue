@@ -113,7 +113,10 @@ export default {
         .then(resp => {
           const token = resp.data.register.token;
           this.$store.commit("authenticate", { token });
-          this.$store.commit("initializeStore", this.$apollo);
+          this.$store.commit("initializeStore", {
+            apollo: this.$apollo,
+            router: this.$router
+          });
           this.$router.push("home");
         })
         .catch(err => {
