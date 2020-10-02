@@ -56,9 +56,16 @@ export default class UserRow extends Vue {
             userId: this.id
           }
         })
-        .then(() => {
+        .then(res => {
+          const newChat = res.data.createChat;
+
+          this.$store.state.chatId = newChat.id;
+          this.$store.state.chatName = newChat.name;
+
           this.$store.commit("messages", []);
+
           this.getChats();
+
           this.$store.commit("searchUsers", []);
         })
         .catch(err => console.log(err));
