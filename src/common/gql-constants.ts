@@ -94,3 +94,20 @@ export const addMessageQuery = gql`
     }
   }
 `;
+
+export const messageReceived = gql`
+  subscription OnMessageReceived {
+    messageReceived {
+      id
+      text
+      from {
+        id
+        username
+        fullName
+      }
+      chat {
+        id
+      }
+    }
+  }
+`;

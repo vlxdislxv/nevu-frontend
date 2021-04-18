@@ -3,6 +3,7 @@ import Vuex from "vuex";
 import { DollarApollo } from "vue-apollo/types/vue-apollo";
 import { profileQuery } from "../common/gql-constants";
 import VueRouter from "vue-router";
+import { getToken } from "../helpers";
 
 Vue.use(Vuex);
 
@@ -16,7 +17,7 @@ export default new Vuex.Store({
     searchUsers: [],
     user: {},
     chatName: "",
-    chatId: -1
+    chatId: -1,
   },
   mutations: {
     user(state, user) {
@@ -38,9 +39,9 @@ export default new Vuex.Store({
     },
     initializeStore(
       state,
-      { apollo, router }: { apollo: DollarApollo<object>; router: VueRouter }
+      { apollo, router }: { apollo: DollarApollo<unknown>; router: VueRouter }
     ) {
-      const token = localStorage.getItem("token");
+      const token = getToken();
       if (token) {
         state.token = token;
         state.authenticated = true;
@@ -49,11 +50,11 @@ export default new Vuex.Store({
             query: profileQuery,
             context: {
               headers: {
-                authorization: `Bearer ${token}`
-              }
-            }
+                authorization: `Bearer ${token}`,
+              },
+            },
           })
-          .then(res => {
+          .then((res) => {
             state.user = res.data.profile;
           })
           .catch(() => {
@@ -63,7 +64,7 @@ export default new Vuex.Store({
             router.push("login");
           });
       }
-    }
+    },
   },
   actions: {},
   modules: {},
@@ -94,6 +95,6 @@ export default new Vuex.Store({
     },
     user(state) {
       return state.user;
-    }
-  }
+    },
+  },
 });

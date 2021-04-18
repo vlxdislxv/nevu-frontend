@@ -18,8 +18,8 @@ new Vue({
   beforeCreate() {
     this.$store.commit("initializeStore", {
       apollo: this.$apollo,
-      router: this.$router
+      router: this.$router,
     });
   },
-  render: h => h(App)
+  render: (h) => h(App),
 }).$mount("#app");

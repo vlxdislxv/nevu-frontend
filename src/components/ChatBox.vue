@@ -55,31 +55,34 @@
   </div>
 </template>
 <script>
-import io from "socket.io-client";
-import { addMessageQuery } from "@/common/gql-constants";
+import { addMessageQuery, messageReceived } from "@/common/gql-constants";
 
 export default {
   name: "ChatBox",
-  beforeMount() {
-    const socket = io("http://localhost:3000/");
-
-    socket.on("inc_msg", data => {
-      this.$toasted.show(`new message from ${data.message.from.fullName}`, {
-        theme: "bubble",
-        position: "top-right",
-        duration: 5000
-      });
-      if (data.message.chat.id === this.$store.getters.chatId) {
-        this.$store.state.messages.push(data.message);
-        setTimeout(() => {
-          const el = this.$el.querySelector(".chatContainerScroll");
-          el.scrollTop = el.scrollHeight;
-        });
-      }
+  mounted() {
+    const observer = this.$apollo.subscribe({
+      query: messageReceived,
     });
 
-    socket.on("connect", () => {
-      socket.emit("auth", { token: this.$store.getters.token });
+    observer.subscribe({
+      next: (({ data }) => {
+        const msg = data.messageReceived;
+        this.$toasted.show(`new message from ${msg.from.fullName}`, {
+          theme: "bubble",
+          position: "top-right",
+          duration: 5000
+        });
+        if (msg.chat.id === this.$store.getters.chatId) {
+          this.$store.state.messages.push(msg);
+          setTimeout(() => {
+            const el = this.$el.querySelector(".chatContainerScroll");
+            el.scrollTop = el.scrollHeight;
+          });
+        }
+      }).bind(this),
+      error (error) {
+        console.error(error)
+      },
     });
   },
   data() {
